@@ -4,6 +4,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
 import unittest
+from jira import JIRA
 
 
 class TestPython(unittest.TestCase):
@@ -16,13 +17,21 @@ class TestPython(unittest.TestCase):
         self.accept_next_alert = True
 
     def test_2(self):
-        driver = self.driver
-        driver.get(self.base_url + "/cep-telefonu/apple-iphone-x-64gb-apple-turkiye-garantili-P225734508")
-        Select(driver.find_element_by_id("582140183")).select_by_visible_text("Uzay Gri ( Space Gray )")
-        driver.find_element_by_link_text("Sepete Ekle").click()
-        driver.find_element_by_css_selector("i.icon.iconBasket").click()
-        self.assertEqual(u"Apple iPhone X 64GB ( Apple Türkiye Garantili )",
-                         driver.find_element_by_link_text(u"Apple iPhone X 64GB ( Apple Türkiye Garantili )").text)
+        try:
+            driver = self.driver
+            driver.get(self.base_url + "/cep-telefonu/apple-iphone-x-64gb-apple-turkiye-garantili-P225734508")
+            Select(driver.find_element_by_id("582140183")).select_by_visible_text("Uzay Gri ( Space Gray )")
+            driver.find_element_by_link_text("Sepete Ekle").click()
+            driver.find_element_by_css_selector("i.icon.iconBasket").click()
+            self.assertEqual(u"Apple iPhone X 64GB ( Apple Türkiye Gaantili )",
+                             driver.find_element_by_link_text(u"Apple iPhone X 64GB ( Apple Türkiye Garantili )").text)
+        except Exception as e:
+
+            jira = JIRA('https://moonlight453.atlassian.net',auth=('ahmetahalbayrak@gmail.com', '13271327'))
+
+
+            new_issue = jira.create_issue(project='MOON', summary='n11- Iphone test',
+                                          description= e.message, issuetype={'name': 'Bug'})
 
     def is_element_present(self, how, what):
         try:
